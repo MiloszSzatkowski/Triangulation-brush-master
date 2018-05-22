@@ -39,6 +39,7 @@ var idforceNotify = stringIDToTypeID("forceNotify");
 desc5.putBoolean(idforceNotify, true);
 executeAction(idslct, desc5, DialogModes.NO);
 
+//prepare config files
 var logFile = new File((new File($.fileName)).parent + "/Array.txt");
 logFile.open("w");
 logFile.writeln(" ");
