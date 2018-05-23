@@ -64,10 +64,25 @@ if (First_bool) {
 
   if (app.activeDocument.pathItems.length > 0) {
 
-    //sort paths
+    //sort paths vars
     var tArr = [];
+    var area, Tstring;
+    var expr = /#/;
+    //sort path loop
     for (var i = 0; i < app.activeDocument.pathItems.length; i++) {
-      app.activeDocument.pathItems[i].name.split('#');
+      Tstring = app.activeDocument.pathItems[i].name;
+      if (Tstring.match(expr)) {
+        tArr = Tstring.split('#');
+        for (var j = 0; j < tArr.length; j++) {
+          tArr[j] = parseFloat(tArr[j]);
+        }
+        //calc relative
+        tArr[2] = tArr[2]-tArr[0];
+        tArr[3] = tArr[3]-tArr[1];
+        area = tArr[2] * tArr[3];
+
+        app.activeDocument.pathItems[i].name = area;
+      }
     }
 
     //findNearbyCoordinates
@@ -121,8 +136,8 @@ if (First_bool) {
             ]
           )) {
             // alert('lol');
-            alert(app.activeDocument.
-              pathItems[i].name);
+            // alert(app.activeDocument.
+            //   pathItems[i].name);
 
               make_path_object(
                 [
@@ -215,10 +230,44 @@ function pointInTriange(P, A, B, C) {
   return (u >= 0) && (v >= 0) && (u + v < 1);
 }
 
-function writeData(new_data) {
-  logFile.open("a");
-  logFile.writeln(new_data);
-}
+// function quickSort(arr, leftPos, rightPos, arrLength) {
+//   let initialLeftPos = leftPos;
+//   let initialRightPos = rightPos;
+//   let direction = true;
+//   let pivot = rightPos;
+//   while ((leftPos - rightPos) < 0) {
+//     if (direction) {
+//       if (arr[pivot] < arr[leftPos]) {
+//         quickSort.swap(arr, pivot, leftPos);
+//         pivot = leftPos;
+//         rightPos--;
+//         direction = !direction;
+//       } else
+//         leftPos++;
+//     } else {
+//       if (arr[pivot] <= arr[rightPos]) {
+//         rightPos--;
+//       } else {
+//         quickSort.swap(arr, pivot, rightPos);
+//         leftPos++;
+//         pivot = rightPos;
+//         direction = !direction;
+//       }
+//     }
+//   }
+//   if (pivot - 1 > initialLeftPos) {
+//     quickSort(arr, initialLeftPos, pivot - 1, arrLength);
+//   }
+//   if (pivot + 1 < initialRightPos) {
+//     quickSort(arr, pivot + 1, initialRightPos, arrLength);
+//   }
+// }
+
+// quickSort.swap = (arr, el1, el2) => {
+//   let swapedElem = arr[el1];
+//   arr[el1] = arr[el2];
+//   arr[el2] = swapedElem;
+// }
 
 function make_path_object(points, counter) {
 
