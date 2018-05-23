@@ -4,7 +4,6 @@ preferences.rulerUnits = Units.PIXELS;
 
 var logFile = new File((new File($.fileName)).parent + "/Array.txt");
 var boolFile = new File((new File($.fileName)).parent + "/First_bool.txt");
-var arrP;
 
 //check whether it is initial division or not
 var a = boolFile;
@@ -26,28 +25,194 @@ if (First_bool) {
   var centerX = Math.round(app.activeDocument.colorSamplers[0].position[0].value);
   var centerY = Math.round(app.activeDocument.colorSamplers[0].position[1].value);
 
+  make_path_object([
+    [      0, 0    ],
+    [      aW, 0    ],
+    [      centerX, centerY    ],
+    [      0, 0    ]
+  ]);
 
-  // alert('first');
+  make_path_object([
+    [      0, 0    ],
+    [      centerX, centerY    ],
+    [      0, aH    ],
+    [      0, 0    ]
+  ]);
 
-  make_path_object([    [      0, 0    ],    [      aW, 0    ],    [      centerX, centerY    ], [      0, 0    ]  ]);
+  make_path_object([
+    [      0, aH    ],
+    [      centerX, centerY    ],
+    [      aW, aH    ],
+    [      0, aH    ]
+  ]);
+
+  make_path_object([
+    [      aW, aH    ],
+    [      centerX, centerY    ],
+    [      aW, 0    ],
+    [      aW, aH    ]
+  ]);
+
   remove_All_Points();
-  writeData(0 + ',' + 0 + ',' + aW + ',' + 0 + ',' + centerX + ',' + centerY + '#');
+  // app.activeDocument.pathItems.removeAll();
 
-  make_path_object([    [      0, 0    ],    [      centerX, centerY    ],    [      0, aH    ], [      0, 0     ]  ]);
-  writeData(0 + ',' + 0 + ',' + centerX + ',' + centerY + ',' + 0 + ',' + aH + '#');
-
-  make_path_object([    [      0, aH   ],    [      centerX, centerY    ],    [      aW, aH   ], [      0, aH    ]  ]);
-  writeData(0 + ',' + aH + ',' + centerX + ',' + centerY + ',' + aW + ',' + aH + '#');
-
-  make_path_object([    [      aW, aH   ],    [      centerX, centerY    ],    [      aW, 0  ], [      aW, aH   ]  ]);
-  writeData(aW + ',' + aH + ',' + centerX + ',' + centerY + ',' + aW + ',' + 0 + '#');
-
-  // boolFile.open("w");
-  // boolFile.writeln("0");
-  // boolFile.close();
+  boolFile.open("w");
+  boolFile.writeln("0");
+  boolFile.close();
 
 } else if (!First_bool) {
-  // alert('second');
+
+  if (app.activeDocument.pathItems.length > 0) {
+
+    //sort paths
+    var tArr = [];
+    for (var i = 0; i < app.activeDocument.pathItems.length; i++) {
+      app.activeDocument.pathItems[i].name.split('#');
+    }
+
+    //findNearbyCoordinates
+    for (var i = 0; i < app.activeDocument.pathItems.length; i++) {
+      //vars
+      var samplX = Math.round(app.activeDocument.colorSamplers[0].position[0].value);
+      var samplY = Math.round(app.activeDocument.colorSamplers[0].position[1].value);
+      var triangle = {};
+      triangle.x1 = app.activeDocument.
+        pathItems[i].
+        subPathItems[0].
+        pathPoints[0].
+        anchor[0];
+      triangle.y1 = app.activeDocument.
+        pathItems[i].
+        subPathItems[0].
+        pathPoints[0].
+        anchor[1];
+      triangle.x2 = app.activeDocument.
+        pathItems[i].
+        subPathItems[0].
+        pathPoints[1].
+        anchor[0];
+      triangle.y2 = app.activeDocument.
+        pathItems[i].
+        subPathItems[0].
+        pathPoints[1].
+        anchor[1];
+      triangle.x3 = app.activeDocument.
+        pathItems[i].
+        subPathItems[0].
+        pathPoints[2].
+        anchor[0];
+      triangle.y3 = app.activeDocument.
+        pathItems[i].
+        subPathItems[0].
+        pathPoints[2].
+        anchor[1];
+      if (pointInTriange(
+            [
+              samplX, samplY
+            ],
+            [
+              triangle.x1,triangle.y1
+            ],
+            [
+              triangle.x2,triangle.y2
+            ],
+            [
+              triangle.x3,triangle.y3
+            ]
+          )) {
+            // alert('lol');
+            alert(app.activeDocument.
+              pathItems[i].name);
+
+              make_path_object(
+                [
+                  [
+                    samplX, samplY
+                  ],
+                  [
+                    triangle.x1,triangle.y1
+                  ],
+                  [
+                    triangle.x2,triangle.y2
+                  ],
+                  [
+                    samplX, samplY
+                  ]
+                ]
+              );
+
+              make_path_object(
+                [
+                  [
+                    samplX, samplY
+                  ],
+                  [
+                    triangle.x1,triangle.y1
+                  ],
+                  [
+                    triangle.x3,triangle.y3
+                  ],
+                  [
+                    samplX, samplY
+                  ]
+                ]
+              );
+
+              make_path_object(
+                [
+                  [
+                    samplX, samplY
+                  ],
+                  [
+                    triangle.x2,triangle.y2
+                  ],
+                  [
+                    triangle.x3,triangle.y3
+                  ],
+                  [
+                    samplX, samplY
+                  ]
+                ]
+              );
+              break;
+            }
+        }
+
+  } else {
+    alert("There are no paths to search through.")
+  }
+
+  remove_All_Points();
+}
+
+function pointInTriange(P, A, B, C) {
+  // Round
+  var Ar = A; var Br = B; var Cr = C; var Pr = P;
+  // var Ar = []; var Br = []; var Cr = []; var Pr = [];
+  // Pr[0] = Math.Round(P[0]); Ar[0] = Math.Round(A[0]);
+  // Pr[1] = Math.Round(P[1]); Ar[1] = Math.Round(A[1]);
+  // Br[0] = Math.Round(B[0]); Cr[0] = Math.Round(C[0]);
+  // Br[1] = Math.Round(B[1]); Cr[1] = Math.Round(C[1]);
+  // Compute vectors
+  function vec(from, to) {  return [to[0] - from[0], to[1] - from[1]];  }
+  var v0 = vec(Ar, Cr);
+  var v1 = vec(Ar, Br);
+  var v2 = vec(Ar, Pr);
+  // Compute dot products
+  function dot(u, v) {  return u[0] * v[0] + u[1] * v[1];  }
+  var dot00 = dot(v0, v0);
+  var dot01 = dot(v0, v1);
+  var dot02 = dot(v0, v2);
+  var dot11 = dot(v1, v1);
+  var dot12 = dot(v1, v2);
+  // Compute barycentric coordinates
+  var invDenom = 1.0 / (dot00 * dot11 - dot01 * dot01);
+  var u = (dot11 * dot02 - dot01 * dot12) * invDenom;
+  var v = (dot00 * dot12 - dot01 * dot02) * invDenom;
+  //test
+  // alert(P + '|' + A + '|' + B + '|' + C);
+  // Check if point is in triangle
+  return (u >= 0) && (v >= 0) && (u + v < 1);
 }
 
 function writeData(new_data) {
@@ -55,32 +220,45 @@ function writeData(new_data) {
   logFile.writeln(new_data);
 }
 
-var counter = 0;
-function make_path_object(points,counter) {
+function make_path_object(points, counter) {
 
   var lineArr = [];
 
-  for (x = 0; x < points.length; x++) {
-    lineArr[x] = new PathPointInfo();
-    lineArr[x].kind = PointKind.CORNERPOINT;
-    lineArr[x].anchor = [
-      points[x][0],
-      points[x][1]
-    ];
-    lineArr[x].leftDirection = lineArr[x].anchor;
-    lineArr[x].rightDirection = lineArr[x].anchor;
+  for (var i = 0; i < points.length; i++) {
+    lineArr[i] = new PathPointInfo();
+    lineArr[i].kind = PointKind.CORNERPOINT;
+    //our points
+    lineArr[i].anchor = Array(points[i][0], points[i][1]);
+    //handles have the same coord as main point - str line
+    lineArr[i].leftDirection = lineArr[i].anchor;
+    lineArr[i].rightDirection = lineArr[i].anchor;
   }
 
-  // alert(lineArr[0].leftDirection.anchor.toString());
+  var lineSubPathArray = [];
+  var lineSubPathArray = new SubPathInfo();
+  lineSubPathArray.operation = ShapeOperation.SHAPEXOR;
+  lineSubPathArray.closed = true;
+  lineSubPathArray.entireSubPath = lineArr;
 
-  var lineSubPathArray = new Array();
-  lineSubPathArray[0] = new SubPathInfo();
-  lineSubPathArray[0].operation = ShapeOperation.SHAPEXOR;
-  lineSubPathArray[0].closed = true;
-  lineSubPathArray[0].entireSubPath = lineArr;
-  var myPathItem = app.activeDocument.pathItems.add(counter, lineSubPathArray);
-  counter++;
-  return myPathItem;
+  //bounds:
+  var minimumX = Math.min(
+    lineArr[0].anchor[0], lineArr[1].anchor[0], lineArr[2].anchor[0]);
+
+  var minimumY = Math.min(
+    lineArr[0].anchor[1], lineArr[1].anchor[1], lineArr[2].anchor[1]);
+
+  var maximumX = Math.max(
+    lineArr[0].anchor[0], lineArr[1].anchor[0], lineArr[2].anchor[0]);
+
+  var maximumY = Math.max(
+    lineArr[0].anchor[1], lineArr[1].anchor[1], lineArr[2].anchor[1]);
+
+  var Name = minimumX + '#' + minimumY +
+  '#' + maximumX + '#' + maximumY;
+
+  var myPathItem = app.activeDocument.pathItems.add(Name, [lineSubPathArray]);
+
+  myPathItem.strokePath(ToolType.BRUSH);
 
 }
 
@@ -97,6 +275,5 @@ function remove_All_Points() {
   desc37.putReference(idnull, ref26);
   executeAction(idDlt, desc37, DialogModes.NO);
 }
-
 
 function findNearbyCoordinates() {}

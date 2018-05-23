@@ -18,12 +18,27 @@ app.notifiersEnabled = true;
 app.notifiers.add("Mk  ", new File((new File($.fileName)).parent + "/Triangulate.jsx"));
 
 var aDoc = app.activeDocument;
+// clean document
 aDoc.flatten();
+app.activeDocument.pathItems.removeAll();
+
 aDoc.activeLayer.name = "Color_Base";
 
 //rename
 var tr = aDoc.artLayers.add();
 tr.name = "Triangulation";
+
+//remove all sample points
+var idDlt = charIDToTypeID("Dlt ");
+var desc37 = new ActionDescriptor();
+var idnull = charIDToTypeID("null");
+var ref26 = new ActionReference();
+var idClSm = charIDToTypeID("ClSm");
+var idOrdn = charIDToTypeID("Ordn");
+var idAl = charIDToTypeID("Al  ");
+ref26.putEnumerated(idClSm, idOrdn, idAl);
+desc37.putReference(idnull, ref26);
+executeAction(idDlt, desc37, DialogModes.NO);
 
 //select Sampler
 var idslct = charIDToTypeID("slct");
