@@ -28,17 +28,22 @@ aDoc.activeLayer.name = "Color_Base";
 var tr = aDoc.artLayers.add();
 tr.name = "Triangulation";
 
-//remove all sample points
-var idDlt = charIDToTypeID("Dlt ");
-var desc37 = new ActionDescriptor();
-var idnull = charIDToTypeID("null");
-var ref26 = new ActionReference();
-var idClSm = charIDToTypeID("ClSm");
-var idOrdn = charIDToTypeID("Ordn");
-var idAl = charIDToTypeID("Al  ");
-ref26.putEnumerated(idClSm, idOrdn, idAl);
-desc37.putReference(idnull, ref26);
-executeAction(idDlt, desc37, DialogModes.NO);
+try {
+  //remove all_sample points
+  var idDlt = charIDToTypeID("Dlt ");
+  var desc37 = new ActionDescriptor();
+  var idnull = charIDToTypeID("null");
+  var ref26 = new ActionReference();
+  var idClSm = charIDToTypeID("ClSm");
+  var idOrdn = charIDToTypeID("Ordn");
+  var idAl = charIDToTypeID("Al  ");
+  ref26.putEnumerated(idClSm, idOrdn, idAl);
+  desc37.putReference(idnull, ref26);
+  executeAction(idDlt, desc37, DialogModes.NO);
+} catch (e) {
+
+} 
+
 
 //select Sampler
 var idslct = charIDToTypeID("slct");
@@ -53,12 +58,3 @@ desc5.putBoolean(iddontRecord, true);
 var idforceNotify = stringIDToTypeID("forceNotify");
 desc5.putBoolean(idforceNotify, true);
 executeAction(idslct, desc5, DialogModes.NO);
-
-//prepare config files
-var logFile = new File((new File($.fileName)).parent + "/Array.txt");
-logFile.open("w");
-logFile.writeln(" ");
-
-var boolFile = new File((new File($.fileName)).parent + "/First_bool.txt");
-boolFile.open("w");
-boolFile.writeln("1");
