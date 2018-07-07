@@ -2,7 +2,7 @@ var Triangulate_Evenly_Load = 'Triangulate_Evenly.jsx';
 
 var swirl_Arr = [];
 
-function triangulate_evenly(Tswirl_X_count, Tswirl_Y_count) {
+function triangulate_evenly(Tswirl_X_count, Tswirl_Y_count, TrandomX, TrandomY) {
 
   var swirl_X_count = Tswirl_X_count;
   var swirl_Y_count = Tswirl_Y_count;
@@ -16,12 +16,15 @@ function triangulate_evenly(Tswirl_X_count, Tswirl_Y_count) {
   // user_input_Randomness = user_input_Randomness / 100;
   // var randomness_amount = (user_input_Randomness > 1) ? 1 : user_input_Randomness;
 
-  var max_jiggle_X = Math.floor( divideX / 4  ) ;
+  var max_jiggle_X = parseInt(Math.floor( divideX / TrandomX  )) ;
   var min_jiggle_X = (0-max_jiggle_X);
+  if (isNaN(max_jiggle_X) ) { max_jiggle_X = 0; min_jiggle_X = 0;  }
 
-  var max_jiggle_Y = Math.floor( divideY / 4  ) ;
-  var min_jiggle_Y = (0-max_jiggle_X);
+  var max_jiggle_Y = parseInt(Math.floor( divideY / TrandomY  )) ;
+  var min_jiggle_Y = (0-max_jiggle_Y);
+  if (isNaN(max_jiggle_Y) ) { max_jiggle_Y = 0; min_jiggle_Y = 0;  }
 
+  // test( max_jiggle_Y , min_jiggle_Y )
 
   var INDEX;
     for (var i = 0; i < swirl_Y_count; i++) {
@@ -189,7 +192,11 @@ function triangulate_evenly(Tswirl_X_count, Tswirl_Y_count) {
   /////////////////////////////////////////////////////////
 
   function random_num_between(min, max) {
-    return Math.floor(Math.random() * (max - min) + min);
+    if (min === 0 || max === 0) {
+      return 0;
+    } else {
+      return Math.floor(Math.random() * (max - min) + min);
+    }
   }
 
   ////////////////////////////////////////////////
@@ -198,11 +205,13 @@ var center;
 
   function make_path_from_regular_division() {
 
-    var temp_w_1 = new Window ('dialog {orientation: "row", alignChildren: [" ", "top"]}',
-    "Progress", undefined, {closeButton: false});
-
+    //progress bar pallete
+    var temp_w_1 = new Window ('palette', "Progress", undefined, {closeButton: false});
+    var desc_temp_1 = temp_w_1.add('statictext', undefined, ('Liczba trojkatow | Amount of triangles:' + (swirl_Arr.length*4) ));
+    var p_bar_1 = temp_w_1.add("progressbar", undefined, 0, swirl_Arr.length);
     temp_w_1.show();
 
+    //loop to make paths
     for (var i = 0; i < swirl_Arr.length; i++) {
 
       center =[];
@@ -236,8 +245,15 @@ var center;
               swirl_Arr[i][1]    ,
               swirl_Arr[i][3]
       ]);
-    }
 
+      //add value to progress bar
+      p_bar_1.value++;
+
+    } //end of loop
+
+    // close proress bar
     temp_w_1.close();
 
-  }
+  } // end of function
+
+///////////////////////////////////////////////////////////////////
