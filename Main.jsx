@@ -22,12 +22,6 @@ var aDoc = app.activeDocument;
 aDoc.flatten();
 app.activeDocument.pathItems.removeAll();
 
-aDoc.activeLayer.name = "Color_Base";
-
-//rename
-var tr = aDoc.artLayers.add();
-tr.name = "Triangulation";
-
 try {
   //remove all_sample points
   var idDlt = charIDToTypeID("Dlt ");
@@ -42,7 +36,7 @@ try {
   executeAction(idDlt, desc37, DialogModes.NO);
 } catch (e) {
 
-} 
+}
 
 
 //select Sampler

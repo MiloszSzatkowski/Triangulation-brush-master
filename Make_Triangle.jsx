@@ -1,3 +1,5 @@
+var Make_Triangle_Load = 'Make_Triangle.jsx';
+
 function make_path_object(points, counter) {
 
   var lineArr = [];

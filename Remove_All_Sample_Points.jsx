@@ -1,3 +1,5 @@
+var Remove_All_Sample_Points_Load = 'Remove_All_Sample_Points.jsx';
+
 function remove_All_Points() {
   //remove all sample points
   var idDlt = charIDToTypeID("Dlt ");

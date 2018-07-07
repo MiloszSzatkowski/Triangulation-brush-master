@@ -1,9 +1,12 @@
+var Triangulate_Evenly_Load = 'Triangulate_Evenly.jsx';
+
+var swirl_Arr = [];
+
 function triangulate_evenly(Tswirl_X_count, Tswirl_Y_count) {
 
   var swirl_X_count = Tswirl_X_count;
   var swirl_Y_count = Tswirl_Y_count;
   var total_swirls = parseInt(swirl_X_count * swirl_Y_count);
-  var swirl_Arr = [];
   var divideX, divideY;
 
   divideX = Math.floor  (aW  / swirl_X_count) ;
@@ -194,6 +197,12 @@ function triangulate_evenly(Tswirl_X_count, Tswirl_Y_count) {
 var center;
 
   function make_path_from_regular_division() {
+
+    var temp_w_1 = new Window ('dialog {orientation: "row", alignChildren: [" ", "top"]}',
+    "Progress", undefined, {closeButton: false});
+
+    temp_w_1.show();
+
     for (var i = 0; i < swirl_Arr.length; i++) {
 
       center =[];
@@ -228,4 +237,7 @@ var center;
               swirl_Arr[i][3]
       ]);
     }
+
+    temp_w_1.close();
+
   }

@@ -1,3 +1,5 @@
+var Divide_current_triangle_Load = 'Divide_current_triangle.jsx';
+
 function findNearbyCoordinates() {
 
   //check if there is any path in a document
