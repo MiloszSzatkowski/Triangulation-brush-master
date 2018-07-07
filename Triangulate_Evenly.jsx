@@ -24,8 +24,6 @@ function triangulate_evenly(Tswirl_X_count, Tswirl_Y_count, TrandomX, TrandomY) 
   var min_jiggle_Y = (0-max_jiggle_Y);
   if (isNaN(max_jiggle_Y) ) { max_jiggle_Y = 0; min_jiggle_Y = 0;  }
 
-  // test( max_jiggle_Y , min_jiggle_Y )
-
   var INDEX;
     for (var i = 0; i < swirl_Y_count; i++) {
       for (var j = 0; j < swirl_X_count; j++) {
