@@ -1,4 +1,16 @@
+packages.push( ('\n' + File($.fileName).name ) );
+
+//vars
+
+var imp_Points_Arr;
+
+////////////////////////////////////////////// ******** MAIN FUNCTION START
+
 function create_point_cloud(  ) {
+
+  ////////////////////////  * initial preperations
+
+  app.activeDocument.flatten();
 
   //convert layer to smart object
   var idnewPlacedLayer = stringIDToTypeID( "newPlacedLayer" );
@@ -34,101 +46,22 @@ function create_point_cloud(  ) {
     desc18.putEnumerated( idIntr, idIntp, idautomaticInterpolation );
     executeAction( idImgS, desc18, DialogModes.NO );
 
+    ////////////////////////  * restoring shapes
+
     //gaussian blur
-    var idGsnB = charIDToTypeID( "GsnB" );
-    var desc21 = new ActionDescriptor();
-    var idRds = charIDToTypeID( "Rds " );
-    var idPxl = charIDToTypeID( "#Pxl" );
-    desc21.putUnitDouble( idRds, idPxl, 1 );
-    executeAction( idGsnB, desc21, DialogModes.NO );
 
     shadow_highlight_correction();
-
-    //cutout filter
-    var idGEfc = charIDToTypeID( "GEfc" );
-        var desc27 = new ActionDescriptor();
-        var idGEfk = charIDToTypeID( "GEfk" );
-        var idGEft = charIDToTypeID( "GEft" );
-        var idCt = charIDToTypeID( "Ct  " );
-        desc27.putEnumerated( idGEfk, idGEft, idCt );
-        var idNmbL = charIDToTypeID( "NmbL" );
-        desc27.putInteger( idNmbL, 8 );
-        var idEdgS = charIDToTypeID( "EdgS" );
-        desc27.putInteger( idEdgS, 5 );
-        var idEdgF = charIDToTypeID( "EdgF" );
-        desc27.putInteger( idEdgF, 3 );
-    executeAction( idGEfc, desc27, DialogModes.NO );
-
     shadow_highlight_correction();
 
-    duplicate_layer();
 
-    //apply treshold
-    var idThrs = charIDToTypeID( "Thrs" );
-    var desc30 = new ActionDescriptor();
-    var idLvl = charIDToTypeID( "Lvl " );
-    desc30.putInteger( idLvl, 128 );
-    executeAction( idThrs, desc30, DialogModes.NO );
 
-    //make selection using color range
-    var idClrR = charIDToTypeID( "ClrR" );
-    var desc33 = new ActionDescriptor();
-    var idFzns = charIDToTypeID( "Fzns" );
-    desc33.putInteger( idFzns, 200 );
-    var idMnm = charIDToTypeID( "Mnm " );
-        var desc34 = new ActionDescriptor();
-        var idLmnc = charIDToTypeID( "Lmnc" );
-        desc34.putDouble( idLmnc, 13.120000 );
-        var idA = charIDToTypeID( "A   " );
-        desc34.putDouble( idA, 3.520000 );
-        var idB = charIDToTypeID( "B   " );
-        desc34.putDouble( idB, 3.560000 );
-    var idLbCl = charIDToTypeID( "LbCl" );
-    desc33.putObject( idMnm, idLbCl, desc34 );
-    var idMxm = charIDToTypeID( "Mxm " );
-        var desc35 = new ActionDescriptor();
-        var idLmnc = charIDToTypeID( "Lmnc" );
-        desc35.putDouble( idLmnc, 13.120000 );
-        var idA = charIDToTypeID( "A   " );
-        desc35.putDouble( idA, 3.520000 );
-        var idB = charIDToTypeID( "B   " );
-        desc35.putDouble( idB, 3.560000 );
-    var idLbCl = charIDToTypeID( "LbCl" );
-    desc33.putObject( idMxm, idLbCl, desc35 );
-    var idcolorModel = stringIDToTypeID( "colorModel" );
-    desc33.putInteger( idcolorModel, 0 );
-    executeAction( idClrR, desc33, DialogModes.NO );
-
-    //make work path from selection
-    var idMk = charIDToTypeID( "Mk  " );
-    var desc39 = new ActionDescriptor();
-    var idnull = charIDToTypeID( "null" );
-        var ref12 = new ActionReference();
-        var idPath = charIDToTypeID( "Path" );
-        ref12.putClass( idPath );
-    desc39.putReference( idnull, ref12 );
-    var idFrom = charIDToTypeID( "From" );
-        var ref13 = new ActionReference();
-        var idcsel = charIDToTypeID( "csel" );
-        var idfsel = charIDToTypeID( "fsel" );
-        ref13.putProperty( idcsel, idfsel );
-    desc39.putReference( idFrom, ref13 );
-    var idTlrn = charIDToTypeID( "Tlrn" );
-    var idPxl = charIDToTypeID( "#Pxl" );
-    desc39.putUnitDouble( idTlrn, idPxl, 5.000000 );
-    executeAction( idMk, desc39, DialogModes.NO );
-
-    extract_points_from_paths();
-
-    app.activeDocument.pathItems.removeAll();
-
-    alert (imp_Points_Arr);
+    // extract_points_from_paths();
+    // app.activeDocument.pathItems.removeAll();
 
 } //end of function
 
-///////////////////////////////////////////////
+/////////////////////////////////////////////// ******** MAIN FUNCTION END
 
-var imp_Points_Arr;
 
 function extract_points_from_paths() {
 
@@ -192,4 +125,81 @@ function shadow_highlight_correction() {
 function duplicate_layer() {
   var idCpTL = charIDToTypeID( "CpTL" );
   executeAction( idCpTL, undefined, DialogModes.NO );
+}
+
+/////////////////////////////////////
+
+function treshold(am) {
+  var idThrs = charIDToTypeID( "Thrs" );
+  var desc30 = new ActionDescriptor();
+  var idLvl = charIDToTypeID( "Lvl " );
+  desc30.putInteger( idLvl, am );
+  executeAction( idThrs, desc30, DialogModes.NO );
+}
+
+/////////////////////////////////////
+
+function gaussian_blur(am) {
+  var idGsnB = charIDToTypeID( "GsnB" );
+  var desc21 = new ActionDescriptor();
+  var idRds = charIDToTypeID( "Rds " );
+  var idPxl = charIDToTypeID( "#Pxl" );
+  desc21.putUnitDouble( idRds, idPxl, am );
+  executeAction( idGsnB, desc21, DialogModes.NO );
+}
+
+/////////////////////////////////////
+
+function color_range_selection() {
+  //make selection using color range
+  var idClrR = charIDToTypeID( "ClrR" );
+  var desc33 = new ActionDescriptor();
+  var idFzns = charIDToTypeID( "Fzns" );
+  desc33.putInteger( idFzns, 200 );
+  var idMnm = charIDToTypeID( "Mnm " );
+      var desc34 = new ActionDescriptor();
+      var idLmnc = charIDToTypeID( "Lmnc" );
+      desc34.putDouble( idLmnc, 13.120000 );
+      var idA = charIDToTypeID( "A   " );
+      desc34.putDouble( idA, 3.520000 );
+      var idB = charIDToTypeID( "B   " );
+      desc34.putDouble( idB, 3.560000 );
+  var idLbCl = charIDToTypeID( "LbCl" );
+  desc33.putObject( idMnm, idLbCl, desc34 );
+  var idMxm = charIDToTypeID( "Mxm " );
+      var desc35 = new ActionDescriptor();
+      var idLmnc = charIDToTypeID( "Lmnc" );
+      desc35.putDouble( idLmnc, 13.120000 );
+      var idA = charIDToTypeID( "A   " );
+      desc35.putDouble( idA, 3.520000 );
+      var idB = charIDToTypeID( "B   " );
+      desc35.putDouble( idB, 3.560000 );
+  var idLbCl = charIDToTypeID( "LbCl" );
+  desc33.putObject( idMxm, idLbCl, desc35 );
+  var idcolorModel = stringIDToTypeID( "colorModel" );
+  desc33.putInteger( idcolorModel, 0 );
+  executeAction( idClrR, desc33, DialogModes.NO );
+}
+
+/////////////////////////////////////
+
+function make_work_path(am) {
+  //make work path from selection
+  var idMk = charIDToTypeID( "Mk  " );
+  var desc39 = new ActionDescriptor();
+  var idnull = charIDToTypeID( "null" );
+      var ref12 = new ActionReference();
+      var idPath = charIDToTypeID( "Path" );
+      ref12.putClass( idPath );
+  desc39.putReference( idnull, ref12 );
+  var idFrom = charIDToTypeID( "From" );
+      var ref13 = new ActionReference();
+      var idcsel = charIDToTypeID( "csel" );
+      var idfsel = charIDToTypeID( "fsel" );
+      ref13.putProperty( idcsel, idfsel );
+  desc39.putReference( idFrom, ref13 );
+  var idTlrn = charIDToTypeID( "Tlrn" );
+  var idPxl = charIDToTypeID( "#Pxl" );
+  desc39.putUnitDouble( idTlrn, idPxl, am );
+  executeAction( idMk, desc39, DialogModes.NO );
 }

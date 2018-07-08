@@ -1,4 +1,4 @@
-var Divide_current_triangle_Load = 'Divide_current_triangle.jsx';
+packages.push( ('\n' + File($.fileName).name ) );
 
 function findNearbyCoordinates() {
 

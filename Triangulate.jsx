@@ -10,21 +10,26 @@ var aH = app.activeDocument.height.value;
 
 function test (val, val2) {  alert ('test \n' + val.toString() + '\n' + val2.toString() );  }
 
+//array holding currently added package
+var packages = [];
+// pushing to array by adding a line to the top of an added script:
+// packages.push( ('\n' + File($.fileName).name ) );
+
 #include Make_Triangle.jsx
+#include Convert_Points_To_Selection.jsx
 #include Remove_All_Sample_Points.jsx
 #include Triangulate_Evenly.jsx
 #include Divide_current_triangle.jsx
+#include Create_Point_Cloud.jsx
 
 /////////////////////////// * initial check start ++++++
 
-// check if all packeges could be included
+// check if all packages were included
+
 function raport() {
   try {
     alert(
-      Triangulate_Evenly_Load + '\n' +
-      Make_Triangle_Load + '\n' +
-      Remove_All_Sample_Points_Load + '\n' +
-      Divide_current_triangle_Load + '\n' + '\n' +
+      packages.toString() + '\n' + '\n' +
       'loaded successfully'
     );
   } catch (e) {
@@ -102,6 +107,9 @@ var cancelButton = buttons.add ("button", undefined, "Anuluj | Cancel", {name: "
 tab.selection = 0;
 
 okButton.onClick = function (){
+
+  app.activeDocument.artLayers.add();
+
   if (tab.selection.text == First_Tab.text) {
     //First tab is selected - Proportional
     triangulate_evenly( parseInt(Tswirl_X_count_text.text) , parseInt(Tswirl_Y_count_text.text),
@@ -109,9 +117,10 @@ okButton.onClick = function (){
                       );
     w.close();
   } else {
-    //Second tab is selected - To Shape
-    alert(2)
+    create_point_cloud();
   }
 }
+
+/////////////// * show window
 
 w.show();

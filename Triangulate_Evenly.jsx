@@ -1,4 +1,4 @@
-var Triangulate_Evenly_Load = 'Triangulate_Evenly.jsx';
+packages.push( ('\n' + File($.fileName).name ) );
 
 var swirl_Arr = [];
 
