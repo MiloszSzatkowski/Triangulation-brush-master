@@ -117,6 +117,7 @@ okButton.onClick = function (){
                       );
     w.close();
   } else {
+    w.close();
     create_point_cloud();
   }
 }

@@ -250,7 +250,7 @@ var center;
 
     } //end of loop
 
-    // close proress bar
+    // close progress bar
     temp_w_1.close();
 
   } // end of function

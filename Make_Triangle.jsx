@@ -1,6 +1,6 @@
 packages.push( ('\n' + File($.fileName).name ) );
 
-function make_path_object(points, counter) {
+function make_path_object(points) {
 
   var lineArr = [];
 

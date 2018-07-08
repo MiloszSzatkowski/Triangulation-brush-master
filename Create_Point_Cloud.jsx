@@ -2,7 +2,7 @@ packages.push( ('\n' + File($.fileName).name ) );
 
 //vars
 
-var imp_Points_Arr;
+var imp_Points_Arr = [];
 
 ////////////////////////////////////////////// ******** MAIN FUNCTION START
 
@@ -52,24 +52,12 @@ function create_point_cloud(  ) {
     shadow_highlight_correction();
 
     //gaussian blur for cleaning low pass noise
-    gaussian_blur(0.3);
-
-    var division_rate_for_cloud = 5;
-
-    //divide picture proportionally
-    var temp_calc_X = app.activeDocument.width.value / division_rate_for_cloud;
-    var temp_calc_Y = app.activeDocument.height.value / temp_calc_X;
-
-    var div_X = division_rate_for_cloud;
-    var div_Y = Math.round(temp_calc_Y);
-
-
-    triangulate_evenly(div_X , div_Y, 4, 4, false );
+    gaussian_blur(2);
 
     Convert_Points_To_Selection_And_Apply_Extraction();
 
     //debug from here
-    //final check
+    // final check
     alert( imp_Points_Arr[0].toString() );
 
 } //end of function
@@ -77,84 +65,55 @@ function create_point_cloud(  ) {
 //seperated to another function for easier debugging
 
 function Convert_Points_To_Selection_And_Apply_Extraction() {
-  for (var i = 0; i < swirl_Arr.length; i++) {
 
-    center =[];
-    center = [ Math.floor( ((swirl_Arr[i][3][0] + swirl_Arr[i][0][0])   / 2 ) ) ,
-    Math.floor( ((swirl_Arr[i][3][1] + swirl_Arr[i][0][1])   / 2 ) ) ];
+    app.activeDocument.selection.selectAll();
 
-    ////////////////////////////////////////// DEBUG FROM HERE !!!
-    _select(
-      swirl_Arr[i][0][0]    ,
-      swirl_Arr[i][0][1]    ,
+    prepare_for_extraction();
 
-      swirl_Arr[i][1][0]    ,
-      swirl_Arr[i][1][1]    ,
+} //function end
 
-      center[0],
-      center[1]
-    );
+function prepare_for_extraction() {
 
-    prepare_for_extraction(i);
+  if ( app.activeDocument.selection != null ) {
+    //keep process on a temporary layer for cpu safety
+    duplicate_layer();
 
-    _select(
-      swirl_Arr[i][0][0]    ,
-      swirl_Arr[i][0][1]    ,
+    //hide other layers
+    app.activeDocument.layers[1].visible = false;
+    app.activeDocument.layers[2].visible = false;
 
-      center[0],
-      center[1],
+    treshold(120);
 
-      swirl_Arr[i][2][0],
-      swirl_Arr[i][2][1]
-    );
+    color_range_selection();
 
-    prepare_for_extraction(i);
+      make_work_path(5);
+      extract_points_from_paths();
 
-    _select(
-      swirl_Arr[i][2][0]    ,
-      swirl_Arr[i][2][1]    ,
+    //cleaning
+    deselect();
+    app.activeDocument.pathItems.removeAll();
 
-      center[0],
-      center[1],
+    //show other layers
+    app.activeDocument.layers[1].visible = true;
+    app.activeDocument.layers[2].visible = true;
 
-      swirl_Arr[i][3][0],
-      swirl_Arr[i][3][1],
-
-    );
-
-    prepare_for_extraction(i);
-
-    _select(
-      swirl_Arr[i][3][0],
-      swirl_Arr[i][3][1],
-
-      center[0],
-      center[1],
-
-      swirl_Arr[i][1][0]    ,
-      swirl_Arr[i][1][1]
-    );
-
-    prepare_for_extraction(i);
-
-  }
-}
-
-function prepare_for_extraction(i) {
-  treshold(128);
-  color_range_selection();
-  make_work_path(4);
-  extract_points_from_paths();
-
-  //invert for later inspect
-  if (i%2===0) {
-    var idInvr = charIDToTypeID( "Invr" );
-    executeAction( idInvr, undefined, DialogModes.NO );
+    //delete layer
+    var idDlt = charIDToTypeID( "Dlt " );
+      var desc2 = new ActionDescriptor();
+      var idnull = charIDToTypeID( "null" );
+          var ref1 = new ActionReference();
+          var idLyr = charIDToTypeID( "Lyr " );
+          var idOrdn = charIDToTypeID( "Ordn" );
+          var idTrgt = charIDToTypeID( "Trgt" );
+          ref1.putEnumerated( idLyr, idOrdn, idTrgt );
+      desc2.putReference( idnull, ref1 );
+      var idLyrI = charIDToTypeID( "LyrI" );
+          var list1 = new ActionList();
+          list1.putInteger( 3 );
+      desc2.putList( idLyrI, list1 );
+      executeAction( idDlt, desc2, DialogModes.NO );
   }
 
-  //cleaning
-  deselect();
-  app.activeDocument.pathItems.removeAll();
 }
 
 /////////////////////////////////////////////// ******** MAIN FUNCTION END
@@ -162,7 +121,6 @@ function prepare_for_extraction(i) {
 
 function extract_points_from_paths() {
 
-  imp_Points_Arr = [];
   for (var i = 0; i < app.activeDocument.pathItems.length; i++) {
     for (var j = 0; j < app.activeDocument.pathItems[i].subPathItems.length; j++) {
       for (var k = 0; k < app.activeDocument.pathItems[i].subPathItems[j].pathPoints.length; k++) {
