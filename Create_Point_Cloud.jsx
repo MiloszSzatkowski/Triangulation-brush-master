@@ -48,17 +48,114 @@ function create_point_cloud(  ) {
 
     ////////////////////////  * restoring shapes
 
-    //gaussian blur
-
     shadow_highlight_correction();
     shadow_highlight_correction();
 
+    //gaussian blur for cleaning low pass noise
+    gaussian_blur(0.3);
+
+    var division_rate_for_cloud = 5;
+
+    //divide picture proportionally
+    var temp_calc_X = app.activeDocument.width.value / division_rate_for_cloud;
+    var temp_calc_Y = app.activeDocument.height.value / temp_calc_X;
+
+    var div_X = division_rate_for_cloud;
+    var div_Y = Math.round(temp_calc_Y);
 
 
-    // extract_points_from_paths();
-    // app.activeDocument.pathItems.removeAll();
+    triangulate_evenly(div_X , div_Y, 4, 4, false );
+
+    Convert_Points_To_Selection_And_Apply_Extraction();
+
+    //debug from here
+    //final check
+    alert( imp_Points_Arr[0].toString() );
 
 } //end of function
+
+//seperated to another function for easier debugging
+
+function Convert_Points_To_Selection_And_Apply_Extraction() {
+  for (var i = 0; i < swirl_Arr.length; i++) {
+
+    center =[];
+    center = [ Math.floor( ((swirl_Arr[i][3][0] + swirl_Arr[i][0][0])   / 2 ) ) ,
+    Math.floor( ((swirl_Arr[i][3][1] + swirl_Arr[i][0][1])   / 2 ) ) ];
+
+    ////////////////////////////////////////// DEBUG FROM HERE !!!
+    _select(
+      swirl_Arr[i][0][0]    ,
+      swirl_Arr[i][0][1]    ,
+
+      swirl_Arr[i][1][0]    ,
+      swirl_Arr[i][1][1]    ,
+
+      center[0],
+      center[1]
+    );
+
+    prepare_for_extraction(i);
+
+    _select(
+      swirl_Arr[i][0][0]    ,
+      swirl_Arr[i][0][1]    ,
+
+      center[0],
+      center[1],
+
+      swirl_Arr[i][2][0],
+      swirl_Arr[i][2][1]
+    );
+
+    prepare_for_extraction(i);
+
+    _select(
+      swirl_Arr[i][2][0]    ,
+      swirl_Arr[i][2][1]    ,
+
+      center[0],
+      center[1],
+
+      swirl_Arr[i][3][0],
+      swirl_Arr[i][3][1],
+
+    );
+
+    prepare_for_extraction(i);
+
+    _select(
+      swirl_Arr[i][3][0],
+      swirl_Arr[i][3][1],
+
+      center[0],
+      center[1],
+
+      swirl_Arr[i][1][0]    ,
+      swirl_Arr[i][1][1]
+    );
+
+    prepare_for_extraction(i);
+
+  }
+}
+
+function prepare_for_extraction(i) {
+  treshold(128);
+  color_range_selection();
+  make_work_path(4);
+  extract_points_from_paths();
+
+  //invert for later inspect
+  if (i%2===0) {
+    var idInvr = charIDToTypeID( "Invr" );
+    executeAction( idInvr, undefined, DialogModes.NO );
+  }
+
+  //cleaning
+  deselect();
+  app.activeDocument.pathItems.removeAll();
+}
 
 /////////////////////////////////////////////// ******** MAIN FUNCTION END
 
@@ -203,3 +300,23 @@ function make_work_path(am) {
   desc39.putUnitDouble( idTlrn, idPxl, am );
   executeAction( idMk, desc39, DialogModes.NO );
 }
+
+/////////////////////////////////////
+
+function deselect() {
+  var idsetd = charIDToTypeID( "setd" );
+    var desc273 = new ActionDescriptor();
+    var idnull = charIDToTypeID( "null" );
+        var ref145 = new ActionReference();
+        var idChnl = charIDToTypeID( "Chnl" );
+        var idfsel = charIDToTypeID( "fsel" );
+        ref145.putProperty( idChnl, idfsel );
+    desc273.putReference( idnull, ref145 );
+    var idT = charIDToTypeID( "T   " );
+    var idOrdn = charIDToTypeID( "Ordn" );
+    var idNone = charIDToTypeID( "None" );
+    desc273.putEnumerated( idT, idOrdn, idNone );
+    executeAction( idsetd, desc273, DialogModes.NO );
+}
+
+/////////////////////////////////////

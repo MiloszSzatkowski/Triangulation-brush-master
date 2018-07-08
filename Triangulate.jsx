@@ -113,7 +113,7 @@ okButton.onClick = function (){
   if (tab.selection.text == First_Tab.text) {
     //First tab is selected - Proportional
     triangulate_evenly( parseInt(Tswirl_X_count_text.text) , parseInt(Tswirl_Y_count_text.text),
-                        parseInt(TrandomX_text.text) , parseInt(TrandomY_text.text)
+                        parseInt(TrandomX_text.text) , parseInt(TrandomY_text.text), true // last arg will commit to draw triangles
                       );
     w.close();
   } else {

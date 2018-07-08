@@ -2,7 +2,7 @@ packages.push( ('\n' + File($.fileName).name ) );
 
 var swirl_Arr = [];
 
-function triangulate_evenly(Tswirl_X_count, Tswirl_Y_count, TrandomX, TrandomY) {
+function triangulate_evenly(Tswirl_X_count, Tswirl_Y_count, TrandomX, TrandomY, commit) {
 
   var swirl_X_count = Tswirl_X_count;
   var swirl_Y_count = Tswirl_Y_count;
@@ -178,7 +178,8 @@ function triangulate_evenly(Tswirl_X_count, Tswirl_Y_count, TrandomX, TrandomY) 
       }
     }
 
-    make_path_from_regular_division();
+    if (commit) {   make_path_from_regular_division();   }
+
 }
 
   ///////////////////////////////////////////
